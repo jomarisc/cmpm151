@@ -8,6 +8,9 @@ TagManager:
   - red
   - yellow
   - green
+  - wall
+  - collectable
+  - floor
   layers:
   - Default
   - TransparentFX

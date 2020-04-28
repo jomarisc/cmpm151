@@ -16,8 +16,10 @@ public class playerControl : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+
+        //Instantiate the OSC Handler
         OSCHandler.Instance.Init();
-        OSCHandler.Instance.SendMessageToClient("pd", "/unity/trigger", "ready");
+        OSCHandler.Instance.SendMessageToClient("pd","/unity/trigger", 1);
     }
 
     // Update is called once per frame
@@ -41,23 +43,19 @@ public class playerControl : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.name == "floor1")
+        if (collision.gameObject.CompareTag("floor"))
         {
             isGrounded = true;
+        }
+        if (collision.gameObject.CompareTag("wall"))
+        {
+            OSCHandler.Instance.SendMessageToClient("pd", "/unity/bumpWall", 1);
         }
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("red"))
-        {
-            other.gameObject.SetActive(false);
-        }
-        if (other.gameObject.CompareTag("yellow"))
-        {
-            other.gameObject.SetActive(false);
-        }
-        if (other.gameObject.CompareTag("green"))
+        if (other.gameObject.CompareTag("collectable"))
         {
             other.gameObject.SetActive(false);
         }
