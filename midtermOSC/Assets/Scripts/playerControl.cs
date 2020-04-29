@@ -9,6 +9,7 @@ public class playerControl : MonoBehaviour
     public float speed;
     public float jump;
     public bool isGrounded = true;
+    private int count = 0;
 
     Dictionary<string, ServerLog> servers = new Dictionary<string, ServerLog>();
 
@@ -19,7 +20,9 @@ public class playerControl : MonoBehaviour
 
         //Instantiate the OSC Handler
         OSCHandler.Instance.Init();
-        OSCHandler.Instance.SendMessageToClient("pd","/unity/trigger", 1);
+        OSCHandler.Instance.SendMessageToClient("pd","/unity/mainTheme", 1);
+        OSCHandler.Instance.SendMessageToClient("pd", "/unity/soundEnable", 1);
+        OSCHandler.Instance.SendMessageToClient("pd", "/unity/startup", 1);
     }
 
     // Update is called once per frame
@@ -58,6 +61,13 @@ public class playerControl : MonoBehaviour
         if (other.gameObject.CompareTag("collectable"))
         {
             other.gameObject.SetActive(false);
+            count++;
+            OSCHandler.Instance.SendMessageToClient("pd", "/unity/pickup", 1);
+            if (count >= 3)
+            {
+                OSCHandler.Instance.SendMessageToClient("pd", "/unity/mainTheme", 0);
+                OSCHandler.Instance.SendMessageToClient("pd", "/unity/victory", 1);
+            }
         }
     }
 }
